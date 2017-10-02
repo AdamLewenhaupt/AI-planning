@@ -1,7 +1,7 @@
 import numpy as np
 from map import Map, WALK, SUBWAY, BUS
 
-transp = ["W", "S", "B"]
+TRANSPORTATIONS = ["W", "S", "B"]
 
 class Traveller:
     """Responsible for the state of the application.
@@ -59,7 +59,7 @@ class Traveller:
 
     def __str__(self):
         """Convert to string"""
-        return " ".join(["%d%s" % (n, transp[t]) for n,t in self.history])
+        return " ".join(["%d%s" % (n, TRANSPORTATIONS[t]) for n,t in self.history])
 
 def main():
     """Testing
