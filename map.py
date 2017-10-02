@@ -94,7 +94,7 @@ def main():
     Testing Map class
     """
 
-    m = Map("./walk.mat", "./subway.mat", "./bus.mat")
+    m = Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
 
     print(m.getMoves(0, 0))
 

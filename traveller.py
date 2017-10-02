@@ -65,7 +65,7 @@ def main():
     """Testing
     """
 
-    m = Map("./walk.mat", "./subway.mat", "./bus.mat")
+    m = Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
     t = Traveller(m, 0)
 
     moves = t.findLegalMoves()
