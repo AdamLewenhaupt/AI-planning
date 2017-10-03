@@ -19,6 +19,7 @@ class Traveller:
         self.timeElapsed = 0
         self.lastVisited = -1
         self.history = []
+        self.target = -1
 
 
     def createMoves(self, items, t):
@@ -49,13 +50,21 @@ class Traveller:
         :param move: A valid move we wish to execute (node, transportation, timeAfter)
         :return: A new agent instance at the given node.
         """
+
         newAgent = Traveller(self.map, move[0])
+        newAgent.target = self.target
         newAgent.lastVisited = self.currentNode
         newAgent.history.append((self.currentNode, move[1]))
         newAgent.history = newAgent.history + self.history
         newAgent.timeElapsed = move[2]
 
         return newAgent
+
+    def setTarget(self, node):
+        self.target = node
+
+    def isAtGoal(self):
+        return self.currentNode == self.target
 
     def __str__(self):
         """Convert to string"""
