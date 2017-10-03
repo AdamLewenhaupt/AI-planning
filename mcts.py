@@ -25,9 +25,14 @@ class TravelAgent(mcts.Agent):
         return str(self.traveller)
 
 def main():
+    
+    nameTable = {}
 
-    start = 0
-    goal = 2
+    with open("./data/test/register.json") as f:
+        nameTable = eval(f.read())
+
+    start = nameTable["Slussen"]
+    goal = nameTable["Tekniska högskolan"]
 
     m = Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
     t = Traveller(m, start)
@@ -39,8 +44,9 @@ def main():
         mc.runSimulation()
 
     print(mc.counter)
-    guess, prob = mc.selectBestGuess()
-    print(str(guess), str(prob))
+    guess, score = mc.selectBestGuess()
+    print(str(guess), str(score))
+    print(guess.traveller.timeElapsed)
     
 
 if __name__ == "__main__":

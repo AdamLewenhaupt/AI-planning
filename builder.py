@@ -29,14 +29,9 @@ def main():
     From command line: python3 builder.py (walk|subway|bus)
     """
 
-    if len(argv) < 2:
-        print("Required argument one of: walk, subway, bus")
-        return
-
-    # Here our graph should be described.
-    kind = argv[1] 
-
     b = Builder()
+
+
 
     # Trying to lay the map out sparsly to sort of convey distance in 1-D at least.
     b.addStation("Tekniska högskolan")
@@ -63,6 +58,13 @@ def main():
             if i == j:
                 continue
             assert(b.walk.data[i][j] == b.walk.data[j][i] and b.walk.data[i][j] > 0)
+
+    if len(argv) < 2:
+        print(b.walk.nameTable)
+        return
+
+    # Here our graph should be described.
+    kind = argv[1] 
 
     if kind == "walk":
         print(b.walk)
