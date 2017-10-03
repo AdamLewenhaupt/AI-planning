@@ -37,13 +37,25 @@ def main():
     kind = argv[1] 
 
     b = Builder()
-    b.addStation("T-centralen")
-    b.addStation("Tekniska högskolan")
-    b.addStation("Östermalmstorg")
 
+    # Trying to lay the map out sparsly to sort of convey distance in 1-D at least.
+    b.addStation("Tekniska högskolan")
+
+    b.addStation("Östermalmstorg")
+    b.addStation("T-centralen")
+
+    b.addStation("Slussen")
+
+    # Adding walks. All have to be connnected.
     b.canWalk("T-centralen", "Tekniska högskolan", 40)
     b.canWalk("T-centralen", "Östermalmstorg", 15)
+    b.canWalk("T-centralen", "Slussen", 30)
+
     b.canWalk("Östermalmstorg", "Tekniska högskolan", 30)
+    b.canWalk("Östermalmstorg", "Slussen", 50)
+
+    b.canWalk("Tekniska högskolan", "Slussen", 70)
+
 
     # Can walk between all nodes
     for i in range(len(b.walk.data)):
