@@ -14,6 +14,9 @@ def dijkstra(traveller, nodes):
         unvisited[nodes[node]] = {"dist": float("inf"), "move": None}  # Saves distance to the node and the move used
     unvisited[curr_node]["dist"] = curr_dist  # Start node takes 0 time to travel to
 
+    traveller_history = []
+    counter = 0
+
     # Iterates until we have reached the goal
     while not curr_trav.isAtGoal():
         moves = curr_trav.findLegalMoves()  # Generates all moves
@@ -24,7 +27,7 @@ def dijkstra(traveller, nodes):
             end_node = move[0]  # Node we travel to with this move
             if end_node in unvisited:  # Needs to be a node we haven't already explored
                 if alt_dist < unvisited[end_node]["dist"]:  # Checks if the move is better than previous moves
-                    unvisited[end_node] = {"dist": alt_dist, "move": move}
+                    unvisited[end_node] = {"dist": alt_dist, "move": move, "counter": counter}  # Counter is the index of the state
 
         # Saves the node in visited and removes it from unvisited
         visited[curr_node] = unvisited
@@ -40,7 +43,12 @@ def dijkstra(traveller, nodes):
         curr_node = next_node
 
         # Updates traveler to move to the next node
-        curr_trav = curr_trav.moveTo(unvisited[next_node]["move"])
+        traveller_history.append(curr_trav)  # Saves the current state
+        curr_trav = traveller_history[unvisited[next_node]["counter"]].moveTo(unvisited[next_node]["move"])  # Makes the move for the appropriate state
+
+        counter += 1
+
+        print(counter)
 
     #print(visited)
     return curr_trav  # Contains the historic moves

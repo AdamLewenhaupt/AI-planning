@@ -3,7 +3,7 @@ from map import Map, WALK, SUBWAY, BUS
 
 # A bit dirty, but works for now.
 NAME_TABLE = None
-with open("./data/test/register.json") as f:
+with open("./data/test/register.json", encoding="UTF-8") as f:
     NAME_TABLE = eval(f.read())
 
 NAME_TABLE = {v: k for k, v in NAME_TABLE.items()}
