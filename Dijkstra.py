@@ -48,7 +48,6 @@ def dijkstra(traveller, nodes):
 
         counter += 1
 
-    #print(visited)
     return curr_trav  # Contains the historic moves
 
 def main():
@@ -56,8 +55,8 @@ def main():
     with open("./data/test/register.json", encoding="UTF-8") as f:
         nameTable = eval(f.read())
 
-    start = nameTable["Slussen"]
-    goal = nameTable["Tekniska högskolan"]
+    start = nameTable["Tekniska högskolan"]
+    goal = nameTable["Slussen"]
 
     m = map.Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
     t = traveller.Traveller(m, start)
@@ -79,5 +78,4 @@ Sätt startnoden som current och spara övriga noder i unvisited
     Ta bort nuvarande noden från unvisited och lägg till den i visited
     Om destinationsnoden är markerad visisted, avbryt
     Välj unvisited noden med minst avstånd, sätt den som current och repeat
-
 '''
