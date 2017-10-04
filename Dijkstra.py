@@ -48,8 +48,6 @@ def dijkstra(traveller, nodes):
 
         counter += 1
 
-        print(counter)
-
     #print(visited)
     return curr_trav  # Contains the historic moves
 
