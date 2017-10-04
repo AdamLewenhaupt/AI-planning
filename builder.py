@@ -31,8 +31,6 @@ def main():
 
     b = Builder()
 
-
-
     # Trying to lay the map out sparsly to sort of convey distance in 1-D at least.
     b.addStation("Tekniska högskolan")
 
@@ -43,7 +41,7 @@ def main():
 
     # Adding walks. All have to be connnected.
     b.canWalk("T-centralen", "Tekniska högskolan", 40)
-    b.canWalk("T-centralen", "Östermalmstorg", 15)
+    b.canWalk("T-centralen", "Östermalmstorg", 25)
     b.canWalk("T-centralen", "Slussen", 30)
 
     b.canWalk("Östermalmstorg", "Tekniska högskolan", 30)

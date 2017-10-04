@@ -1,6 +1,13 @@
 import numpy as np
 from map import Map, WALK, SUBWAY, BUS
 
+# A bit dirty, but works for now.
+NAME_TABLE = None
+with open("./data/test/register.json") as f:
+    NAME_TABLE = eval(f.read())
+
+NAME_TABLE = {v: k for k, v in NAME_TABLE.items()}
+
 TRANSPORTATIONS = ["walk", "subway", "bus"]
 
 class Traveller:
@@ -27,7 +34,6 @@ class Traveller:
         :param items: A numpy list of possible moves.
         :param t: the type of transportation.
         """
-
         return [(i,t,x) for (i,x) in enumerate(items.tolist()) if x > 0 and i != self.lastVisited]
 
     def findLegalMoves(self):
@@ -56,7 +62,7 @@ class Traveller:
         newAgent.lastVisited = self.currentNode
         newAgent.history.append((self.currentNode, move[1]))
         newAgent.history = newAgent.history + self.history
-        newAgent.timeElapsed = move[2]
+        newAgent.timeElapsed = move[2] + self.timeElapsed
 
         return newAgent
 
@@ -70,25 +76,30 @@ class Traveller:
         """Convert to string"""
         reversed_hist = list(reversed(self.history))
         #print(reversed_hist)
-        if self.isAtGoal():
-            return " ".join(["%d -> %s ->" % (n, TRANSPORTATIONS[t]) for n,t in reversed_hist]) + " " + str(self.currentNode)
-        else:
-            return " ".join(["%d %s ->" % (n, TRANSPORTATIONS[t]) for n,t in reversed_hist])
+        return " ".join(["%s -> %s ->" % (NAME_TABLE[n], TRANSPORTATIONS[t]) for n,t in reversed_hist]) + " " + NAME_TABLE[self.currentNode]
 
 
 def main():
-    """Testing
-    """
+    """ Testing """
 
     m = Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
-    t = Traveller(m, 0)
+    t = Traveller(m, 3)
+
+    print(t)
 
     moves = t.findLegalMoves()
-    print(moves[4])
-    t1 = t.moveTo(moves[4])
+    print(moves[1])
+    t1 = t.moveTo(moves[2])
     print(t1)
-    print(t1.moveTo(t1.findLegalMoves()[0]))
+    print(t1.timeElapsed)
 
+    t2 = t1.moveTo(t1.findLegalMoves()[1])
+    print(t2)
+    print(t2.timeElapsed)
+
+    t3 = t2.moveTo(t2.findLegalMoves()[0])
+    print(t3)
+    print(t3.timeElapsed)
 
 if __name__ == "__main__":
     main()

@@ -59,8 +59,6 @@ class MCTS:
 
             currentState = random.choice(currentState.findLegalNextStates())
 
-            if currentState.isDone():
-                break
 
             h = str(currentState)
 
@@ -71,6 +69,9 @@ class MCTS:
                     self.score[h] = 0
 
                 visited.append(h)
+
+            if currentState.isDone():
+                break
 
         score = currentState.score()
         for h in visited:
@@ -90,6 +91,7 @@ class MCTS:
             if len(possibleNextStates) == 0:
                 break
 
+            print([str(x[0]) for x in possibleNextStates])
             bestOption = max(possibleNextStates, key=lambda x: x[1])
             currentState = bestOption[0]
 

@@ -60,6 +60,7 @@ def main():
     path_result = dijkstra(t, nameTable)
     print("Path found:")
     print(path_result)
+    print("Expected time: %d min." % path_result.timeElapsed)
 
 if __name__ == "__main__":
     main()
