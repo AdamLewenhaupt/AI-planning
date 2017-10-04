@@ -1,7 +1,7 @@
 import numpy as np
 from map import Map, WALK, SUBWAY, BUS
 
-TRANSPORTATIONS = ["W", "S", "B"]
+TRANSPORTATIONS = ["walk", "subway", "bus"]
 
 class Traveller:
     """Responsible for the state of the application.
@@ -68,7 +68,13 @@ class Traveller:
 
     def __str__(self):
         """Convert to string"""
-        return " ".join(["%d%s" % (n, TRANSPORTATIONS[t]) for n,t in self.history])
+        reversed_hist = list(reversed(self.history))
+        #print(reversed_hist)
+        if self.isAtGoal():
+            return " ".join(["%d -> %s ->" % (n, TRANSPORTATIONS[t]) for n,t in reversed_hist]) + " " + str(self.currentNode)
+        else:
+            return " ".join(["%d %s ->" % (n, TRANSPORTATIONS[t]) for n,t in reversed_hist])
+
 
 def main():
     """Testing
@@ -78,6 +84,7 @@ def main():
     t = Traveller(m, 0)
 
     moves = t.findLegalMoves()
+    print(moves[4])
     t1 = t.moveTo(moves[4])
     print(t1)
     print(t1.moveTo(t1.findLegalMoves()[0]))

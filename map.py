@@ -15,12 +15,12 @@ class Map:
     SUBWAY_LEAVES_EVERY = 10
 
     # Considered as +x minutes
-    BUS_ARRIVAL_VARIANCE = np.sqrt(10)
-    SUBWAY_ARRIVAL_VARIANCE = np.sqrt(5)
+    BUS_ARRIVAL_VARIANCE = np.sqrt(5)
+    SUBWAY_ARRIVAL_VARIANCE = np.sqrt(2)
 
     # Gives resonable values
-    BUS_DELAY_VARIANCE = np.sqrt(0.1)
-    SUBWAY_DELAY_VARIANCE = np.sqrt(0.05)
+    BUS_DELAY_VARIANCE = np.sqrt(0.5)
+    SUBWAY_DELAY_VARIANCE = np.sqrt(0.2)
 
     def __init__(self, walk, subway, bus):
         """Initialize a new map
