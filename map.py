@@ -20,7 +20,7 @@ class Map:
 
     # Gives resonable values
     BUS_DELAY_VARIANCE = np.sqrt(2)
-    SUBWAY_DELAY_VARIANCE = np.sqrt(0.7)
+    SUBWAY_DELAY_VARIANCE = np.sqrt(1)
 
     def __init__(self, walk, subway, bus):
         """Initialize a new map
