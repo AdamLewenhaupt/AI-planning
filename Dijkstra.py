@@ -1,6 +1,7 @@
 import traveller
 import map
 
+
 # Implements Dijkstra's algorithm
 def dijkstra(traveller, nodes):
 
@@ -50,14 +51,54 @@ def dijkstra(traveller, nodes):
 
     return curr_trav  # Contains the historic moves
 
+# Runs Dijkstra 100 times and takes the route that was fastest the most times.
+# Returns the most common path, its shortest, average, and longest time (for the times it was chosen as the fastest)
+def mean_dijkstra(start, goal, nodes):
+
+    # Iterates X times and saves the results in a dict
+    paths = {}  # Key is the printed representation of the route, also contains a list of all its recorded times
+    path_results = {}
+    for i in range(0, 10):
+        m = map.Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
+        t = traveller.Traveller(m, start)
+        t.setTarget(goal)
+        path_result = dijkstra(t, nodes)
+        if str(path_result.history) in paths:
+            paths[str(path_result.history)].append(path_result.timeElapsed)
+        else:
+            paths[str(path_result.history)] = [path_result.timeElapsed]
+            path_results[str(path_result.history)] = path_result
+
+    # Chooses the most common path
+    max_length = 0
+    most_common_path = ""
+    for path in paths:
+        if len(paths[path]) > max_length:
+            max_length = len(paths[path])
+            most_common_path = path
+        #print(path, paths[path])
+
+    # Calculates its shortest, average, and longest time
+    path_times = sorted(paths[most_common_path])
+    mean = round(sum(path_times) / float(len(path_times)), 1)
+    shortest = round(path_times[0], 1)
+    longest = round(path_times[len(path_times)-1], 1)
+
+    return path_results[most_common_path], shortest, mean, longest
+
 def main():
 
     with open("./data/test/register.json", encoding="UTF-8") as f:
         nameTable = eval(f.read())
 
-    start = nameTable["Stadion"]
-    goal = nameTable["Kungsholmen"]
+    start = nameTable["T-centralen"]
+    goal = nameTable["Gamla stan"]
 
+    most_common_path, shortest, mean, longest = mean_dijkstra(start, goal, nameTable)
+
+    print("Most common path: ", most_common_path, "\nShortest:\t", shortest, "\nMean:\t\t", mean, "\nLongest:\t", longest)
+
+    '''
     m = map.Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
     t = traveller.Traveller(m, start)
     t.setTarget(goal)
@@ -66,6 +107,7 @@ def main():
     print("Path found:")
     print(path_result)
     print("Expected time: %d min." % path_result.timeElapsed)
+    '''
 
 if __name__ == "__main__":
     main()
