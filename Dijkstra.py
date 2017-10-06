@@ -55,8 +55,8 @@ def main():
     with open("./data/test/register.json", encoding="UTF-8") as f:
         nameTable = eval(f.read())
 
-    start = nameTable["Tekniska högskolan"]
-    goal = nameTable["Slussen"]
+    start = nameTable["Stadion"]
+    goal = nameTable["Kungsholmen"]
 
     m = map.Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
     t = traveller.Traveller(m, start)
