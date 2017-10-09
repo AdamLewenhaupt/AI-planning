@@ -15,12 +15,12 @@ class Map:
     SUBWAY_LEAVES_EVERY = 10
 
     # Considered as +x minutes
-    BUS_ARRIVAL_VARIANCE = np.sqrt(3)
-    SUBWAY_ARRIVAL_VARIANCE = np.sqrt(1)
+    BUS_ARRIVAL_VARIANCE = np.sqrt(0.1)
+    SUBWAY_ARRIVAL_VARIANCE = np.sqrt(0.5)
 
     # Gives resonable values
-    BUS_DELAY_VARIANCE = np.sqrt(2)
-    SUBWAY_DELAY_VARIANCE = np.sqrt(1)
+    BUS_DELAY_VARIANCE = np.sqrt(0.1)
+    SUBWAY_DELAY_VARIANCE = np.sqrt(0.05)
 
     def __init__(self, walk, subway, bus):
         """Initialize a new map
@@ -59,7 +59,7 @@ class Map:
         return timeToNextBus, timeToNextSubway
 
 
-    def getMoves(self, currentNode, time):
+    def getMoves(self, currentNode, time, currentlyUsing):
         """Get all possible moves from the current node, with time of arrival
         if all stochastic elements are considered. Time is absolute based on the
         input time.
@@ -84,8 +84,10 @@ class Map:
         s = np.multiply(s, 1 + subwayVariance)
         b = np.multiply(b, 1 + busVariance)
 
-        s = self.addNZ(s, timeToNextSubway + time)
-        b = self.addNZ(b, timeToNextBus + time)
+        if currentlyUsing != SUBWAY:
+            s = self.addNZ(s, timeToNextSubway + time)
+        elif currentlyUsing != BUS:
+            b = self.addNZ(b, timeToNextBus + time)
 
         return w, s, b
 
@@ -96,7 +98,7 @@ def main():
 
     m = Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
 
-    print(m.getMoves(0, 0))
+    print(m.getMoves(0, 0, -1))
 
 
 if __name__ == "__main__":
