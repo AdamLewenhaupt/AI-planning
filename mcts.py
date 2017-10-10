@@ -73,7 +73,7 @@ def main():
     
     nameTable = {}
 
-    with open("./data/test/register.json") as f:
+    with open("./data/test/register.json", encoding="UTF-8") as f:
         nameTable = eval(f.read())
 
     start = nameTable["Tekniska högskolan"]

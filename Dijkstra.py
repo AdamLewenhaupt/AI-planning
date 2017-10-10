@@ -58,7 +58,7 @@ def mean_dijkstra(start, goal, nodes):
     # Iterates X times and saves the results in a dict
     paths = {}  # Key is the printed representation of the route, also contains a list of all its recorded times
     path_results = {}
-    for i in range(0, 10):
+    for i in range(0, 1000):
         m = map.Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
         t = traveller.Traveller(m, start)
         t.setTarget(goal)
@@ -73,6 +73,7 @@ def mean_dijkstra(start, goal, nodes):
     max_length = 0
     most_common_path = ""
     for path in paths:
+        print(path_results[path])
         if len(paths[path]) > max_length:
             max_length = len(paths[path])
             most_common_path = path
@@ -91,8 +92,8 @@ def main():
     with open("./data/test/register.json", encoding="UTF-8") as f:
         nameTable = eval(f.read())
 
-    start = nameTable["T-centralen"]
-    goal = nameTable["Gamla stan"]
+    start = nameTable["Tekniska högskolan"]
+    goal = nameTable["Slussen"]
 
     most_common_path, shortest, mean, longest = mean_dijkstra(start, goal, nameTable)
 
