@@ -16,7 +16,7 @@ class Map:
 
     # Considered as +x minutes
     BUS_ARRIVAL_VARIANCE = np.sqrt(0.1)
-    SUBWAY_ARRIVAL_VARIANCE = np.sqrt(0.5)
+    SUBWAY_ARRIVAL_VARIANCE = np.sqrt(0.05)
 
     # Gives resonable values
     BUS_DELAY_VARIANCE = np.sqrt(0.1)
