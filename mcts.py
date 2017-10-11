@@ -2,8 +2,9 @@ import mcts.mcts as mcts
 
 from traveller import Traveller
 from map import Map
+from sys import argv
 
-C = 100
+C = 50
 TOTAL_ITERATIONS = 1000
 SHOWN = {}
 
@@ -67,6 +68,19 @@ class TravelAgent(mcts.Agent):
 
     def __hash__(self):
         return hash(self.traveller)
+ 
+
+def byMean(agent):
+    mean, var = agent.traveller.simulate(200)
+    return mean, var
+
+
+def findOptimalSolution(solutions):
+    """ Used to find the best option amongst the ones suggested by the MCTS.
+    :param soltuions: The MCTS suggested solutions.
+    """
+
+    return min(solutions, key = byMean)
 
 
 def main():
@@ -89,25 +103,31 @@ def main():
         if target == t.target and time < worstStraightPath:
             worstStraightPath = time
 
-    print("Worst time: %d" % worstStraightPath)
+    if len(argv) > 2:
+        print("Worst time: %d" % worstStraightPath)
 
-    mc = mcts.MCTS(TravelAgent(t, worstStraightPath), lambda solutions: min(solutions, key=lambda s: s.traveller.timeElapsed), C=C)
+    mc = mcts.MCTS(TravelAgent(t, worstStraightPath), findOptimalSolution, C=C)
 
-    print("Running simulations...")
+    if len(argv) > 2:
+        print("Running simulations...")
 
     for i in range(TOTAL_ITERATIONS):
-        if i % 100 == 0:
+        if len(argv) > 2 and i % 100 == 0:
             print("Ran %d iterations" % i)
         mc.runSimulation()
 
     guess, foundSolution = mc.selectBestGuess()
 
-    if not foundSolution or guess.traveller.timeElapsed > worstStraightPath:
-        print("Just walk %d" % worstStraightPath)
-    else:
-        print("Path: %s, takes: %d" % (str(guess), guess.traveller.timeElapsed))
 
-    report(mc)
+    if argv[1] == "path":
+        if not foundSolution or guess.traveller.timeElapsed > worstStraightPath:
+            print("Walk %d" % worstStraightPath)
+        else:
+            mean, var = byMean(guess)
+            print("%s, mean: %.1f, var: %.1f" % (str(guess), mean, var))
+
+    else: 
+        report(mc)
     
 
 if __name__ == "__main__":

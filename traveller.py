@@ -1,5 +1,6 @@
 import numpy as np
 from map import Map, WALK, SUBWAY, BUS
+import statistics
 
 # A bit dirty, but works for now.
 NAME_TABLE = None
@@ -92,57 +93,57 @@ class Traveller:
 
     def rewalk(self, fn):
         """ Rewalk path and do something at every timestep.
-        I'm sorry for this function...
         :param fn: A function to execute at every timestep. Takes the state as arg.
         """
 
         initialNode = self.visited[-1]
         t = Traveller(self.map, initialNode)
+        t.setTarget(self.target)
 
         fn(t)
 
         for i in reversed(range(len(self.visited) - 1)):
 
+
             kind = self.history[i + 1][1]
 
-            m = None
+            moves = t.findLegalMoves()
 
-            if kind == WALK:
-                m = self.map.walk
-            elif kind == BUS:
-                m = self.map.bus
-            elif kind == SUBWAY:
-                m = self.map.subway
-            else:
-                raise Exception("Error")
+            m = filter(lambda x: x[0] == self.visited[i] and x[1] == kind, moves)
+            m = list(m)
 
-            time = m[t.currentNode, self.visited[i]]
-
-            move = (self.visited[i], kind, time)
-
-            t = t.moveTo(move)
+            t = t.moveTo(m[0])
 
             fn(t)
 
+    
+        moves = t.findLegalMoves()
+        kind = self.history[0][1]
+        m = filter(lambda x: x[0] == self.currentNode and x[1] == kind, moves)
 
-        kind = self.history[-1][1]
-        if kind == WALK:
-            m = self.map.walk
-        elif kind == BUS:
-            m = self.map.bus
-        elif kind == SUBWAY:
-            m = self.map.subway
-        else:
-            raise Exception("Error")
-   
-        time = m[self.history[-1][0], self.currentNode]
-
-        move = (self.currentNode, kind, time)
-        t = t.moveTo(move)
-
+        m = list(m)
+        
+        t = t.moveTo(m[0])
         fn(t)
 
 
+    def _add(self, result, state):
+        if state.isAtGoal():
+            result.append(state.timeElapsed)
+
+    def simulate(self, N = 1000):
+        """ Simulate the path to get statistics on travel times.
+        :param N: The amount of samples to draw
+        """
+
+        data = []
+
+
+        for i in range(N):
+            self.rewalk(lambda s: self._add(data, s))
+
+        mean = statistics.mean(data)
+        return mean, statistics.variance(data, mean)
 
 
 
@@ -154,8 +155,7 @@ def main():
 
     m = Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
     t = Traveller(m, 3)
-
-    print(t)
+    t.setTarget(0)
 
     moves = t.findLegalMoves()
 
@@ -168,12 +168,24 @@ def main():
     print(t2)
     print(t2.timeElapsed)
 
+    print(t2.isAtGoal())
+
     t3 = t2.moveTo(t2.findLegalMoves()[0])
     print(t3)
     print(t3.timeElapsed)
 
+    print(t3.currentNode)
+
+    print(t3.isAtGoal())
+    print(t3.timeElapsed)
+
     print("Rewalk")
     t3.rewalk(lambda x: print(x))
+
+    
+    mean, var = t3.simulate(1000)
+    print(mean, var)
+    
 
 if __name__ == "__main__":
     main()
