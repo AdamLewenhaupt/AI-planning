@@ -1,5 +1,6 @@
 import traveller
 import map
+import numpy as np
 
 
 # Implements Dijkstra's algorithm
@@ -73,31 +74,47 @@ def mean_dijkstra(start, goal, nodes):
     max_length = 0
     most_common_path = ""
     for path in paths:
-        print(path_results[path])
+        #print(path_results[path])
         if len(paths[path]) > max_length:
             max_length = len(paths[path])
             most_common_path = path
-        #print(path, paths[path])
+        #print(path_results[path], len(paths[path]))
 
     # Calculates its shortest, average, and longest time
     path_times = sorted(paths[most_common_path])
     mean = round(sum(path_times) / float(len(path_times)), 1)
-    shortest = round(path_times[0], 1)
-    longest = round(path_times[len(path_times)-1], 1)
+    variance = np.var(path_times)
+    #shortest = round(path_times[0], 1)
+    #longest = round(path_times[len(path_times)-1], 1)
 
-    return path_results[most_common_path], shortest, mean, longest
+    #return path_results[most_common_path], shortest, mean, longest
+    return path_results[most_common_path], mean, variance
 
 def main():
 
     with open("./data/test/register.json", encoding="UTF-8") as f:
         nameTable = eval(f.read())
 
-    start = nameTable["Tekniska högskolan"]
-    goal = nameTable["Slussen"]
+    start_points = [nameTable["Tekniska högskolan"], nameTable["Norrtull"], nameTable["Tekniska högskolan"],
+                    nameTable["Tekniska högskolan"], nameTable["S:t Eriksplan"], nameTable["S:t Eriksplan"],
+                    nameTable["Kungsholmen"], nameTable["Eriksbergsgatan"], nameTable["Eriksbergsgatan"],
+                    nameTable["Eriksbergsgatan"]]
+    goal_points = [nameTable["Slussen"], nameTable["Slussen"], nameTable["Norrtull"],
+                   nameTable["Mariatorget"], nameTable["Kungsträdgården"], nameTable["Mariatorget"],
+                   nameTable["Zinkensdamm"], nameTable["Slussen"], nameTable["Odengatan"],
+                   nameTable["Kungsholmen"]]
 
-    most_common_path, shortest, mean, longest = mean_dijkstra(start, goal, nameTable)
+    #start = nameTable["Eriksbergsgatan"]
+    #goal = nameTable["Kungsholmen"]
 
-    print("Most common path: ", most_common_path, "\nShortest:\t", shortest, "\nMean:\t\t", mean, "\nLongest:\t", longest)
+    for i in range(len(start_points)):
+
+        #most_common_path, shortest, mean, longest = mean_dijkstra(start_points[i], goal_points[i], nameTable)
+        #print("Most common path: ", most_common_path, "\nShortest:\t", shortest, "\nMean:\t\t", mean, "\nLongest:\t", longest)
+
+        most_common_path, mean, variance = mean_dijkstra(start_points[i], goal_points[i], nameTable)
+        #print("Most common path: ", most_common_path, "\nMean:\t\t", mean, "\nVariance:\t",variance)
+        print(most_common_path, "\t", mean, "\t", variance)  #
 
     '''
     m = map.Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
