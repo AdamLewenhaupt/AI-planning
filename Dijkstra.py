@@ -52,8 +52,8 @@ def dijkstra(traveller, nodes):
 
     return curr_trav  # Contains the historic moves
 
-# Runs Dijkstra 100 times and takes the route that was fastest the most times.
-# Returns the most common path, its shortest, average, and longest time (for the times it was chosen as the fastest)
+# Runs Dijkstra "iterations" times and chooses the route that was fastest the most times.
+# Returns the most common path and its average time and variance, and how often the most common and second most common paths were chosen
 def mean_dijkstra(start, goal, nodes, iterations):
 
     # Iterates X times and saves the results in a dict
@@ -76,7 +76,6 @@ def mean_dijkstra(start, goal, nodes, iterations):
     most_common_path = ""
     second_most_common_path = ""
     for path in paths:  # Keeps track of both the most common and the most common path
-        #print(path_results[path])
         if len(paths[path]) > max_length:
             second_max_length = max_length
             second_most_common_path = most_common_path
@@ -85,7 +84,6 @@ def mean_dijkstra(start, goal, nodes, iterations):
         if max_length > len(paths[path]) > second_max_length:
             second_max_length = len(paths[path])
             second_most_common_path = path
-        #print(path_results[path], len(paths[path]))
 
     # Calculates its shortest, average, and longest time
     path_times = sorted(paths[most_common_path])
@@ -96,17 +94,35 @@ def mean_dijkstra(start, goal, nodes, iterations):
         percent_occ_second = round(float(len(paths[second_most_common_path])) / float(iterations), 3)  # Percent of times the second most common path was chosen
     except:
         percent_occ_second = 0.00
-    #shortest = round(path_times[0], 1)
-    #longest = round(path_times[len(path_times)-1], 1)
 
-    #return path_results[most_common_path], shortest, mean, longest
     return path_results[most_common_path], mean, variance, percent_occ, percent_occ_second
+
+# Used to calculate how many iterations are required
+# Works by increasing the number of iterations and printing how often the most common paths are chosen
+def get_req_iterations(start, goal, nameTable):
+    for i in range(100, 1500, 100):
+        paths = {}
+        for j in range(0, 100):
+            most_common_path, mean, variance, percent_occ, percent_occ_second = mean_dijkstra(start, goal, nameTable, i)
+            path = str(most_common_path)
+            if path in paths:
+                paths[path] += 1
+            else:
+                paths[path] = 1
+
+        print(i, end="\t")
+        for path in paths:
+            print(paths[path], end="\t")
+        print()
 
 def main():
 
     with open("./data/test/register.json", encoding="UTF-8") as f:
         nameTable = eval(f.read())
-    #print(nameTable)
+
+    # get_req_iterations(nameTable["Tekniska högskolan"], nameTable["Slussen"], nameTable)  # Only used once
+
+    # Lists of start- and goal-points to be studied
     start_points = [nameTable["Tekniska högskolan"], nameTable["Norrtull"], nameTable["Tekniska högskolan"],
                     nameTable["Tekniska högskolan"], nameTable["S:t Eriksplan"], nameTable["S:t Eriksplan"],
                     nameTable["Kungsholmen"], nameTable["Eriksbergsgatan"], nameTable["Eriksbergsgatan"],
@@ -115,44 +131,20 @@ def main():
                    nameTable["Mariatorget"], nameTable["Kungsträdgården"], nameTable["Mariatorget"],
                    nameTable["Zinkensdamm"], nameTable["Slussen"], nameTable["Odengatan"],
                    nameTable["Kungsholmen"]]
-    iterations = 1000
-    #start = nameTable["Eriksbergsgatan"]
-    #goal = nameTable["Kungsholmen"]
+    iterations = 1000  # Number of iterations Dijkstra's algorithm is run
 
+    # Computes Dijkstra's algorithm for each pair of start- and goal-points
     for i in range(len(start_points)):
 
-        #most_common_path, shortest, mean, longest = mean_dijkstra(start_points[i], goal_points[i], nameTable)
-        #print("Most common path: ", most_common_path, "\nShortest:\t", shortest, "\nMean:\t\t", mean, "\nLongest:\t", longest)
-
+        # Computes Dijkstra and measures the elapsed time
         start_time = time.time()
         most_common_path, mean, variance, percent_occ, percent_occ_second = mean_dijkstra(start_points[i], goal_points[i], nameTable, iterations)
-        time_elapsed = time.time() - start_time  # Time it took to compute Dijkstra's
+        time_elapsed = time.time() - start_time
 
-        #print("Most common path: ", most_common_path, "\nMean:\t\t", mean, "\nVariance:\t",variance)
-        start = str(most_common_path).split(" -> ")[0]  # Fetches the start and end points for the print
+        # Prints the result in a table format
+        start = str(most_common_path).split(" -> ")[0]  # Fetches the start and goal-points for the print
         goal = str(most_common_path).split(" -> ")[-1]
-        print(start, "\t", goal, "\t", mean, "\t", variance, "\t", percent_occ, "\t", percent_occ_second, "\t", time_elapsed, "\t", most_common_path)  # Gives the output in a table format
-
-    '''
-    m = map.Map("./data/test/walk.mat", "./data/test/subway.mat", "./data/test/bus.mat")
-    t = traveller.Traveller(m, start)
-    t.setTarget(goal)
-
-    path_result = dijkstra(t, nameTable)
-    print("Path found:")
-    print(path_result)
-    print("Expected time: %d min." % path_result.timeElapsed)
-    '''
+        print(start, "\t", goal, "\t", mean, "\t", variance, "\t", percent_occ, "\t", percent_occ_second, "\t", time_elapsed, "\t", most_common_path)
 
 if __name__ == "__main__":
     main()
-
-
-'''
-Ge startnoden värdet 0 och resterande inf
-Sätt startnoden som current och spara övriga noder i unvisited
-    För nuvarande noden, beräkna avståndet till alla grannar. Om nytt kortaste, spara detta
-    Ta bort nuvarande noden från unvisited och lägg till den i visited
-    Om destinationsnoden är markerad visisted, avbryt
-    Välj unvisited noden med minst avstånd, sätt den som current och repeat
-'''
