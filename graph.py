@@ -2,7 +2,7 @@ import numpy as np
 
 class Graph:
     """
-    Use as an UI for more human-friendly graph-creation.
+    Used as an UI for more human-friendly graph-creation.
     """
 
     def __init__(self):
@@ -11,6 +11,10 @@ class Graph:
 
 
     def addNode(self, name):
+        """
+        Add a node to the graph.
+        :param name: The name of the node
+        """
         size = len(self.data)
         self.nameTable[name] = size
         self.data.append([0] * size)
@@ -19,6 +23,12 @@ class Graph:
 
 
     def join(self, a, b, w):
+        """
+        Join two nodes.
+        :param a: The first node
+        :param b: The second node
+        :param w: The weight of the edge
+        """
         i1 = self.nameTable[a]
         i2 = self.nameTable[b]
 

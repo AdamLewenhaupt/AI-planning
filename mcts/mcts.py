@@ -52,6 +52,13 @@ class MCTS:
         return self.score[h] / self.counter[h]
 
     def ucb(self, states):
+        """
+        Select the best next state based on
+        the UCB algorithm. If all states are not expanded
+        we fall back to selecting at random.
+
+        :param states: A list of states amongst which we choose.
+        """
 
         keys = self.counter.keys()
         maxScore = -9999
@@ -76,7 +83,7 @@ class MCTS:
         return states[hashes.index(best)]
 
     def runSimulation(self):
-        """Run a Monte-Carlo simulation with the agent.
+        """Run a Monte-Carlo simulation.
         """
 
         hasExpanded = False

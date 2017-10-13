@@ -112,6 +112,9 @@ class Traveller:
             m = filter(lambda x: x[0] == self.visited[i] and x[1] == kind, moves)
             m = list(m)
 
+            if len(m) == 0:
+                return
+            
             t = t.moveTo(m[0])
 
             fn(t)
@@ -120,8 +123,10 @@ class Traveller:
         moves = t.findLegalMoves()
         kind = self.history[0][1]
         m = filter(lambda x: x[0] == self.currentNode and x[1] == kind, moves)
-
         m = list(m)
+
+        if len(m) == 0:
+            return
         
         t = t.moveTo(m[0])
         fn(t)
